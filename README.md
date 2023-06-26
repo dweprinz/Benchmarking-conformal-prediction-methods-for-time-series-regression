@@ -1,7 +1,7 @@
 Installation Guide
 - Python version 3.10.10 is used for the experiments
 - Install the required libraries from the requirements.txt
-    - use: pip install -r path/to/requirements.txt
+    - use: pip install -r /path/to/requirements.txt
 
 
 NOTE: For clarity, notebooks are inside folders for each experiments. When running experiments notebooks, one might need to move the notebook to the main directory. This is due to dependencies on the modules. 
