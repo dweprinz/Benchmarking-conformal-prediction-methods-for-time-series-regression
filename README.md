@@ -4,6 +4,7 @@ Installation Guide
     - (Optional) For simplicity in kernel usage, you can create a labeled kernel: `python3.10 -m ipykernel install --user --name=thesis-3.10`
     - To activate the environment: `source environment_name/bin/activate`
     - To deactivate the environment: `deactivate`
+    - To remove the environment: `rm -rf /path/to/environment`
 - Install the required libraries from the requirements.txt
     - use: `pip install -r /path/to/requirements.txt`
 
