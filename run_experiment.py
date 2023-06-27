@@ -126,7 +126,7 @@ def get_data(dataset: str):
             data["t"] = data.index
             data["y"] = data["Close"]
             data = data[["t", "y"]].reset_index(drop=True)
-            
+
         case _:
             print("Dataset not found")
             return None

@@ -167,39 +167,73 @@ def train_val_test(df: pd.DataFrame, T: int, tvt_split=[0.6, 0.2, 0.2], shuffle=
     return df_train, df_val, df_test
 
 
-def split_x_y(data: pd.DataFrame, columns=["t", "y", "X_1", "X_2", "X_3", "X_4", "X_5", "X_6"]):
+def split_x_y(
+    data: pd.DataFrame, columns=["t", "y", "X_1", "X_2", "X_3", "X_4", "X_5", "X_6"]
+):
     x = data[columns[0]].to_numpy().reshape(-1, 1)
     y = data[columns[1]].to_numpy()
     return x, y
 
-def compute_enbpi(model, df: pd.DataFrame, df_train: pd.DataFrame, df_val: pd.DataFrame, df_test: pd.DataFrame, tvt_split: list, T: int):
-    X_bootstrap = np.concatenate([df_train["y_lag"].to_numpy().reshape(-1,1), 
-                              df_val["y_lag"].to_numpy().reshape(-1,1)], axis=0)
+
+def compute_enbpi(
+    model,
+    df: pd.DataFrame,
+    df_train: pd.DataFrame,
+    df_val: pd.DataFrame,
+    df_test: pd.DataFrame,
+    tvt_split: list,
+    T: int,
+):
+    X_bootstrap = np.concatenate(
+        [
+            df_train["y_lag"].to_numpy().reshape(-1, 1),
+            df_val["y_lag"].to_numpy().reshape(-1, 1),
+        ],
+        axis=0,
+    )
     y_bootstrap = np.concatenate([df_train["y"].to_numpy(), df_val["y"].to_numpy()])
 
     n_bs_samples = 20
     enbpi = EnbPI(n_bs_samples=n_bs_samples)
     bs_indices, bs_train_data = enbpi.bootstrap(X_bootstrap, y_bootstrap)
 
-    bs_train_preds, bs_test_preds = enbpi.train(model, n_bs_samples=n_bs_samples,
-                                            bs_train_data=bs_train_data,
-                                            X_train=X_bootstrap,
-                                            X_test=df_test["y_lag"].to_numpy().reshape(-1,1))
+    bs_train_preds, bs_test_preds = enbpi.train(
+        model,
+        n_bs_samples=n_bs_samples,
+        bs_train_data=bs_train_data,
+        X_train=X_bootstrap,
+        X_test=df_test["y_lag"].to_numpy().reshape(-1, 1),
+    )
 
-    conformal_intervals = enbpi.create_conformal_interval_online(bs_indices=bs_indices,
-                                bs_train_preds=bs_train_preds,
-                                bs_test_preds=bs_test_preds,
-                                y_train=y_bootstrap,
-                                y_test=df_test["y"].to_numpy())
+    conformal_intervals = enbpi.create_conformal_interval_online(
+        bs_indices=bs_indices,
+        bs_train_preds=bs_train_preds,
+        bs_test_preds=bs_test_preds,
+        y_train=y_bootstrap,
+        y_test=df_test["y"].to_numpy(),
+    )
 
     preds = np.mean(np.concatenate([bs_train_preds, bs_test_preds], axis=1), axis=0)
 
-    metric = Metrics(df_test["y"].to_numpy(), preds[df_test["t"]], conformal_intervals[:,0], conformal_intervals[:,1],)
+    metric = Metrics(
+        df_test["y"].to_numpy(),
+        preds[df_test["t"]],
+        conformal_intervals[:, 0],
+        conformal_intervals[:, 1],
+    )
     return metric.computeAll(model_name="EnbPI").values()
-    
 
 
-def compute_aci(model_predictions: dict, df: pd.DataFrame, df_train: pd.DataFrame, df_val: pd.DataFrame, df_test: pd.DataFrame, tvt_split: list, T: int, gamma: float):
+def compute_aci(
+    model_predictions: dict,
+    df: pd.DataFrame,
+    df_train: pd.DataFrame,
+    df_val: pd.DataFrame,
+    df_test: pd.DataFrame,
+    tvt_split: list,
+    T: int,
+    gamma: float,
+):
     aci = ACI()
     conformal_intervals = aci.create_conformal_interval(
         model_predictions,
@@ -220,7 +254,14 @@ def compute_aci(model_predictions: dict, df: pd.DataFrame, df_train: pd.DataFram
 
 
 def optimize_conformal(
-    param_range: np.ndarray, model_predictions: dict, df: pd.DataFrame, df_train: pd.DataFrame, df_val: pd.DataFrame, df_test: pd.DataFrame, tvt_split: list, T: int
+    param_range: np.ndarray,
+    model_predictions: dict,
+    df: pd.DataFrame,
+    df_train: pd.DataFrame,
+    df_val: pd.DataFrame,
+    df_test: pd.DataFrame,
+    tvt_split: list,
+    T: int,
 ):
     print(param_range)
 

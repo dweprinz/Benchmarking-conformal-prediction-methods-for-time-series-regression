@@ -41,7 +41,7 @@ class Metrics:
 
         return norm_avg_length
 
-    def CWC(self, eta: int=30, alpha: float=0.1):
+    def CWC(self, eta: int = 30, alpha: float = 0.1):
         return (1 - self.PINAW()) * np.e ** (-eta * (self.PICP() - (1 - alpha)) ** 2)
 
     def computeAll(self, model_name="Unknown", eta=30, alpha=0.1):

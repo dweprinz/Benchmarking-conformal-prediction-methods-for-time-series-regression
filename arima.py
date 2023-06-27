@@ -13,7 +13,7 @@ class ARIMA:
             regressor=SARIMA(order=(12, 1, 1), seasonal_order=(0, 0, 0, 0), maxiter=5),
         )
 
-    def preprocess(self, data):
+    def preprocess(self, data: pd.DataFrame):
         # skforecast expects specific format
         data["datetime"] = pd.to_datetime(data["t"])
         data = data.set_index("datetime")

@@ -16,9 +16,10 @@ from sklearn.linear_model import QuantileRegressor
 # https://pypi.org/project/quantile-forest/
 # !pip install quantile-forest
 
+
 class QuantileLinearRegressor:
     def __init__(self, quantiles: list, alpha: int = 1):
-        """"
+        """ "
         Args:
             quantiles (list): List of target quantiles
             alpha (int, optional): L1 Regularization constant. Defaults to 1.
@@ -86,7 +87,7 @@ class QuantileLinearRegressor:
 
 
 class QuantileForestRegressor:
-    def __init__(self, y_real, quantiles: list=[0.05, 0.95], **kwargs):
+    def __init__(self, y_real, quantiles: list = [0.05, 0.95], **kwargs):
         self.qrf = RandomForestQuantileRegressor(**kwargs)
         self.y_real = y_real
         self.quantiles = quantiles
@@ -126,8 +127,8 @@ class QuantileForestRegressor:
 class QuantileNeuralRegressor:
     def __init__(
         self,
-        quantiles: list=[0.05, 0.95],
-        n_inputs:int=1,
+        quantiles: list = [0.05, 0.95],
+        n_inputs: int = 1,
         model_params: tuple[int, int, str] = (4, 256, "relu"),
     ):
         self.quantiles = quantiles
@@ -137,7 +138,7 @@ class QuantileNeuralRegressor:
             quantiles=self.quantiles, n_inputs=self.n_inputs, model=self.model_params
         )
 
-    def fit(self, X_train:np.ndarray, y_train:np.ndarray, n_epochs: int = 15):
+    def fit(self, X_train: np.ndarray, y_train: np.ndarray, n_epochs: int = 15):
         training_data = (X_train, y_train)
         logs = self.qrnn.train(training_data=training_data, n_epochs=n_epochs)
         return logs
