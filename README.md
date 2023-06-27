@@ -4,14 +4,14 @@ Installation Guide
     - use: `pip install -r /path/to/requirements.txt`
 
 
-NOTE: For clarity, notebooks are inside folders for each experiments. When running experiments notebooks, one might need to move the notebook to the main directory. This is due to dependencies on the modules. 
+NOTE: For clarity, notebooks are inside folders for each experiment. When running experiments notebooks, one might need to move the notebook to the main directory. This is due to dependencies on the modules. 
 
 
 Experiments:
 1. Main experiments
     - there are 5 datasets (synthetic, google, Euro Stoxx, power, temperature) 
     - there are 3 seeds (seeds 100, 300, 500)
-    - for every dataset for every seed a notebook is created which generates results
+    - for every dataset for every seed a notebook is created which generates results (15 in total)
         - to reproduce the experiments you have to run every notebook in `main_results/notebooks`
     - the results are stored in results folders within the `main_results` folder and can be inspected using `results.ipynb`
 
