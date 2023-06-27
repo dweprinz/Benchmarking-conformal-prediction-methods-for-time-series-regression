@@ -1,5 +1,5 @@
 Installation Guide
-- Python version 3.10.10 is used for the experiments in a virtual environment
+- Python version 3.10.10 is used for the experiments in a virtual environment. This is due to 3.11 being to recent for aws-fortuna.
     - To create an environment: `python3.10 -m venv "environment_name"`
     - (Optional) For simplicity in kernels, you can create a labeled kernel: `python3.10 -m ipykernel install --user --name=thesis-3.10`
     - To activate the environment: `source environment_name/bin/activate`
