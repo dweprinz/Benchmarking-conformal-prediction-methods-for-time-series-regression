@@ -33,7 +33,7 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 
 
-def feature_engineering(df):
+def feature_engineering(df: pd.DataFrame):
     import warnings
 
     warnings.filterwarnings("ignore")
@@ -56,7 +56,7 @@ def feature_engineering(df):
     return df, df_train, df_val, df_test, T, tvt_split
 
 
-def get_data(dataset):
+def get_data(dataset: str):
     match dataset:
         case "synthetic":
             data = pd.read_csv("synthetic_data/synthetic_3000_samples.csv")
@@ -135,7 +135,7 @@ def get_data(dataset):
     return data
 
 
-def experiment_arima(df, T):
+def experiment_arima(df: pd.DataFrame, T: int):
     import warnings
 
     warnings.filterwarnings("ignore")

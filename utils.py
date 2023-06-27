@@ -10,7 +10,7 @@ from metrics import Metrics
 
 
 class SyntheticData:
-    def __init__(self, n_samples, stationary=True):
+    def __init__(self, n_samples: int, stationary=True):
         self.n_samples = n_samples
         self.stationary = stationary
 
@@ -47,14 +47,14 @@ class SyntheticData:
     def Y_to_series(self, Y):
         return pd.Series(Y)
 
-    def Y_to_df(self, X, Y):
+    def Y_to_df(self, X: np.ndarray, Y: np.ndarray):
         T = len(Y)
         df = pd.DataFrame({"t": np.arange(T), "y": Y})
         df_X = pd.DataFrame(X, columns=["X_1", "X_2", "X_3", "X_4", "X_5", "X_6"])
         df = df.join(df_X)
         return df, T
 
-    def Y_to_csv(self, Y):
+    def Y_to_csv(self, Y: np.ndarray):
         name_to_store = f"synthetic_data/synthetic_{self.n_samples}_samples.csv"
         self.Y_to_series(Y).to_csv(name_to_store)
 
@@ -65,9 +65,9 @@ class SyntheticData:
 
 
 def create_subplots(
-    X_all,
-    X_test,
-    df,
+    X_all: np.ndarray,
+    X_test: np.ndarray,
+    df: pd.DataFrame,
     predictions: list[tuple],
     titles: list,
     title="Quantile Regression",
@@ -145,7 +145,7 @@ def load_file(parent, name, ext):
     return file
 
 
-def train_val_test(df, T, tvt_split=[0.6, 0.2, 0.2], shuffle=False):
+def train_val_test(df: pd.DataFrame, T: int, tvt_split=[0.6, 0.2, 0.2], shuffle=False):
     if shuffle:
         df_train_val = df[(df.index < int(sum(tvt_split[:2]) * T))]
         df_train_val = df_train_val.sample(frac=1).reset_index(drop=True)
@@ -167,12 +167,12 @@ def train_val_test(df, T, tvt_split=[0.6, 0.2, 0.2], shuffle=False):
     return df_train, df_val, df_test
 
 
-def split_x_y(data, columns=["t", "y", "X_1", "X_2", "X_3", "X_4", "X_5", "X_6"]):
+def split_x_y(data: pd.DataFrame, columns=["t", "y", "X_1", "X_2", "X_3", "X_4", "X_5", "X_6"]):
     x = data[columns[0]].to_numpy().reshape(-1, 1)
     y = data[columns[1]].to_numpy()
     return x, y
 
-def compute_enbpi(model, df, df_train, df_val, df_test, tvt_split, T):
+def compute_enbpi(model, df: pd.DataFrame, df_train: pd.DataFrame, df_val: pd.DataFrame, df_test: pd.DataFrame, tvt_split: list, T: int):
     X_bootstrap = np.concatenate([df_train["y_lag"].to_numpy().reshape(-1,1), 
                               df_val["y_lag"].to_numpy().reshape(-1,1)], axis=0)
     y_bootstrap = np.concatenate([df_train["y"].to_numpy(), df_val["y"].to_numpy()])
@@ -199,7 +199,7 @@ def compute_enbpi(model, df, df_train, df_val, df_test, tvt_split, T):
     
 
 
-def compute_aci(model_predictions, df, df_train, df_val, df_test, tvt_split, T, gamma):
+def compute_aci(model_predictions: dict, df: pd.DataFrame, df_train: pd.DataFrame, df_val: pd.DataFrame, df_test: pd.DataFrame, tvt_split: list, T: int, gamma: float):
     aci = ACI()
     conformal_intervals = aci.create_conformal_interval(
         model_predictions,
@@ -220,7 +220,7 @@ def compute_aci(model_predictions, df, df_train, df_val, df_test, tvt_split, T, 
 
 
 def optimize_conformal(
-    param_range, model_predictions, df, df_train, df_val, df_test, tvt_split, T
+    param_range: np.ndarray, model_predictions: dict, df: pd.DataFrame, df_train: pd.DataFrame, df_val: pd.DataFrame, df_test: pd.DataFrame, tvt_split: list, T: int
 ):
     print(param_range)
 
