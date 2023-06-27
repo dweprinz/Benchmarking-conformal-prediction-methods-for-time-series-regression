@@ -16,14 +16,16 @@ from sklearn.linear_model import QuantileRegressor
 # https://pypi.org/project/quantile-forest/
 # !pip install quantile-forest
 
-# https://neuralprophet.com/contents.html
-# !pip install neuralprophet
-
-
 class QuantileLinearRegressor:
-    def __init__(self, quantiles, alpha=1):
+    def __init__(self, quantiles: list, alpha: int = 1):
+        """"
+        Args:
+            quantiles (list): List of target quantiles
+            alpha (int, optional): L1 Regularization constant. Defaults to 1.
+        """
         self.quantiles = quantiles
 
+        # initialize multiple quantile regressors for each quantile to solve
         self.QRs = [
             QuantileRegressor(quantile=q, alpha=alpha, solver="highs")
             for q in quantiles
@@ -64,6 +66,7 @@ class QuantileLinearRegressor:
             QR.fit(X_train, y_train)
 
     def predict(self, X):
+        """Make predictions for each target quantile."""
         y_pred = np.zeros((X.shape[0], len(self.quantiles)))
         for i, QR in enumerate(self.QRs):
             y_pred[:, i] = QR.predict(X)
@@ -83,7 +86,7 @@ class QuantileLinearRegressor:
 
 
 class QuantileForestRegressor:
-    def __init__(self, y_real, quantiles=[0.05, 0.95], differencing=False, **kwargs):
+    def __init__(self, y_real, quantiles: list=[0.05, 0.95], **kwargs):
         self.qrf = RandomForestQuantileRegressor(**kwargs)
         self.y_real = y_real
         self.quantiles = quantiles
@@ -123,8 +126,8 @@ class QuantileForestRegressor:
 class QuantileNeuralRegressor:
     def __init__(
         self,
-        quantiles=[0.05, 0.95],
-        n_inputs=1,
+        quantiles: list=[0.05, 0.95],
+        n_inputs:int=1,
         model_params: tuple[int, int, str] = (4, 256, "relu"),
     ):
         self.quantiles = quantiles
@@ -134,7 +137,7 @@ class QuantileNeuralRegressor:
             quantiles=self.quantiles, n_inputs=self.n_inputs, model=self.model_params
         )
 
-    def fit(self, X_train, y_train, n_epochs: int = 15):
+    def fit(self, X_train:np.ndarray, y_train:np.ndarray, n_epochs: int = 15):
         training_data = (X_train, y_train)
         logs = self.qrnn.train(training_data=training_data, n_epochs=n_epochs)
         return logs
@@ -145,47 +148,7 @@ class QuantileNeuralRegressor:
 
         return y_pred.numpy()
 
-    def plot_quantiles(self, X_all, y_series, predictions):
-        # plot the time series samples
-        fig, ax = plot_series(y_series)
-
-        # plot the quantile lines
-        for quantile, y_pred in predictions.items():
-            ax.plot(X_all[:, 0], y_pred.reshape(-1, 1), label=f"Quantile: {quantile}")
-
-        ax.legend()
-
-
-class QuantileNeuralProphetRegressor:
-    def __init__(self, quantiles=[0.05, 0.95], **kwargs):
-        self.quantiles = quantiles
-        self.NN = NeuralProphet(quantiles=self.quantiles, **kwargs)
-
-    def preprocess_data(self, df: pd.DataFrame):
-        # t and Y columns are expected to be named ds and y
-        data = df.copy()
-        data.columns = ["ds", "y"]
-        data["ds"] = data["ds"].apply(pd.to_datetime)
-        return data
-
-    def fit(self, df_train: pd.DataFrame):
-        # Fit the model with the observations
-
-        # when transforming integers to datetime, the unit is assumed to be nanoseconds
-        self.NN.fit(df_train, freq="ns")
-
-    def predict(
-        self,
-        data: pd.DataFrame,
-        columns: list = ["t", "y", "yhat1", "lower", "upper", "ar1", "trend"],
-    ):
-        # Perform prediction with the trained models
-        y_pred = self.NN.predict(df=data)
-        display(y_pred)
-        y_pred.columns = columns
-        return y_pred
-
-    def plot_quantiles(self, X_all, y_series, predictions):
+    def plot_quantiles(self, X_all: np.ndarray, y_series: pd.Series, predictions: dict):
         # plot the time series samples
         fig, ax = plot_series(y_series)
 

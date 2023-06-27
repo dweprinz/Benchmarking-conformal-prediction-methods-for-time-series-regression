@@ -278,14 +278,7 @@ class EnbPI:
         y_train: np.ndarray,
         y_test: np.ndarray,
     ):
-        # conformal_intervals = self.enbpi.conformal_interval(
-        #     bootstrap_indices=bs_indices,
-        #     bootstrap_train_preds=bs_train_preds,
-        #     bootstrap_test_preds=bs_test_preds,
-        #     train_targets=y_train,
-        #     error=0.1,
-        # )
-
+        
         batch_size = 1
         conformal_intervals2 = np.zeros((len(y_test), 2))
         for i in range(0, len(y_test), batch_size):
@@ -574,7 +567,7 @@ class EnCQR:
         return PI, conf_PI
 
     def plot_conformal_interval(
-        self, X_all, y_series, predictions, X_test, conformal_intervals
+        self, X_all: np.ndarray, y_series: pd.Series, predictions: dict, X_test: np.ndarray, conformal_intervals: np.ndarray
     ):
         # plot time series data samples
         fig, ax = plot_series(y_series)
