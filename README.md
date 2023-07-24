@@ -25,7 +25,7 @@ Experiments:
         - The file `ACI_grid_search.ipynb` is the file in which grid search is performed
         - Using `aci_optimized_comparison.ipynb`, the parameters found in the previous grid search can be evaluated on the test set (random seed 300)
         - These results are exported and can be inspected using results_aci_grid_search.ipynb
-    - Quantile tunning
+    - Quantile tuning
         - Experiments on synthetic data can be found in `quantile_tuning-SYNTHETIC.ipynb`
         - Experiments on google data can be found in `quantile_tuning.ipynb`
     - Multi-step forecasting
