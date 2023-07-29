@@ -35,3 +35,13 @@ Experiments:
     - Real-life data can be found within the data folder
     - Synthetic data is found in the synthetic_data folder
 
+If you use this repository, please cite the associated thesis:
+```
+@mastersthesis{Prinzhorn2023,
+	author = {Derck Walther Eward Prinzhorn},
+	title = {Benchmarking conformal prediction methods for time series regression},
+	school = {University of Amsterdam},
+	year = {2023},
+	type= {Bachelor's Thesis}
+}
+```
